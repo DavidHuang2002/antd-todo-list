@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,eACI,sBAAuB,CACvB,iBAAkB,CAElB,SAAU,CACV,gBAAiB,CACjB,iBACJ","file":"main.53905f07.chunk.css","sourcesContent":[".todoContainer {\n    font-family: sans-serif;\n    text-align: center;\n\n    width: 75%;\n    margin-left: auto;\n    margin-right: auto; \n}\n"]}

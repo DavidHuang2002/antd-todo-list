@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/antd-todo-list/static/css/main.53905f07.chunk.css",
+    "main.js": "/antd-todo-list/static/js/main.84571a07.chunk.js",
+    "main.js.map": "/antd-todo-list/static/js/main.84571a07.chunk.js.map",
+    "runtime-main.js": "/antd-todo-list/static/js/runtime-main.4d2b9b55.js",
+    "runtime-main.js.map": "/antd-todo-list/static/js/runtime-main.4d2b9b55.js.map",
+    "static/css/2.a95be28f.chunk.css": "/antd-todo-list/static/css/2.a95be28f.chunk.css",
+    "static/js/2.105c7bc3.chunk.js": "/antd-todo-list/static/js/2.105c7bc3.chunk.js",
+    "static/js/2.105c7bc3.chunk.js.map": "/antd-todo-list/static/js/2.105c7bc3.chunk.js.map",
+    "index.html": "/antd-todo-list/index.html",
+    "static/css/2.a95be28f.chunk.css.map": "/antd-todo-list/static/css/2.a95be28f.chunk.css.map",
+    "static/css/main.53905f07.chunk.css.map": "/antd-todo-list/static/css/main.53905f07.chunk.css.map",
+    "static/js/2.105c7bc3.chunk.js.LICENSE.txt": "/antd-todo-list/static/js/2.105c7bc3.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4d2b9b55.js",
+    "static/css/2.a95be28f.chunk.css",
+    "static/js/2.105c7bc3.chunk.js",
+    "static/css/main.53905f07.chunk.css",
+    "static/js/main.84571a07.chunk.js"
+  ]
+}

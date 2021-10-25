@@ -3,12 +3,15 @@ import { Component, useState} from "react";
 import { Input, List, DatePicker} from "antd";
 import {CloseCircleOutlined} from '@ant-design/icons';
 
-// TODO
+import { Typography } from 'antd';
+const { Title, Paragraph, Text, Link } = Typography;
+
+// PLAN
 // add an event listener- cmd-z / cmd-shift-z to undo/redo changes
 // keep track of the previous state in history
   // history
     // prev: array of old states
-      // question-should I track the nextId? maybe yes
+      // question-should I track the nextId? maybe not, that will complicate the situation
     // current: normally null, but when undoing, track the pos in history
     
 
@@ -33,18 +36,132 @@ import {CloseCircleOutlined} from '@ant-design/icons';
       // current not null
     // set current to place to redo to
       // current = current + 1
-    // set todos&nextId to prev[current] - helper func
+      // if current == len - 1, current=null
+    // set todos&nextId to prev[current]
 
 class Todo extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state ={
-      history: [],
+		this.state = {
+      // note: history only tracks of past states, the current state is not in it
+      history: {
+        prev: [],
+        current: null,
+      },
 			todos: [],
       nextId: 0
 		}
 	}
+
+  // --- undo/redo ---
+  // helper func for changing todos
+  editTodos(newTodos){
+    const {todos, nextId, history} = this.state;
+    let {prev, current} = history;
+    // if the current is not null, truncate prev, set current to null
+    // so you can't redo after editing
+
+    //TODO: something is off...
+    if(current||(current===0)){
+      // do not include the current state
+      // since it will be added later anyway
+      prev = prev.slice(0, current);
+      current = null;
+    }
+
+    // add current todos to history
+    const newPrev = prev.concat({
+      todos: todos,
+      nextId: nextId
+    });
+    const newHistory = {
+      prev: newPrev,
+      current: current
+    }
+    
+    this.setState({history: newHistory});
+    
+    // change state to newTodos
+    this.setState({todos: newTodos});
+  }
+
+  undo = () => {
+    const {todos, nextId} = this.state;
+    let {prev, current} = this.state.history;
+    
+    // check if there are history to revert to
+      // prev non-empty
+      // not in earliest history(current=0)
+    if ((!prev)||(current===0)){
+      console.log('Undo failed: no history revert back to');
+      return;
+    }
+
+    // set current to place to revert to
+    if (!current) {
+      // if this is the first undo 
+      // add the state now to history(so we can redo)
+      current = prev.length - 1;
+
+      prev = prev.concat({
+        todos: todos,
+        nextId: nextId
+      });
+    } else {
+      current = current - 1;
+    }
+    const newHistory = {
+      prev: prev,
+      current: current
+    }
+    this.setState({history: newHistory});
+
+    // set todos&nextId to prev[current]
+    this.setState(prev[current]);
+  }
+
+  redo = ()=>{
+    let {current, prev} = this.state.history;
+
+    // check if there are states to redo to
+    // if current state is at the end of history list
+    // there is no future states to redo to, set current to null
+    if (current===(prev.length-1)){
+      current = null;
+    }
+    if (current===null) {
+      console.log('redo fails: no state to redo to');
+      return;
+    }
+
+    // set current to place to redo to
+    current = current + 1;
+    
+    this.setState({history: {
+      prev: prev,
+      current: current
+    }})
+
+    // set todos&nextId to prev[current]
+    this.setState(prev[current]);
+  }
+
+  // event listening for ctrl+z / ctrl+shift+z
+  componentDidMount() {
+    // event for undo&redo
+    window.addEventListener('keydown', (event) => {
+      if (event.ctrlKey
+        &&event.shiftKey
+        &&event.key.toLowerCase() === 'z') {
+        this.redo();
+      } else if (event.ctrlKey
+        &&event.key.toLowerCase() === 'z') {
+        this.undo();
+      } 
+    });
+  }
+  
 
   addInput = (todoContent)=>{
     const {todos, nextId} = this.state;
@@ -57,9 +174,9 @@ class Todo extends Component {
         date: null,
       }
     );
-
+    
+    this.editTodos(newTodos);
     this.setState({
-      todos: newTodos,
       nextId: nextId+1,
     });
   }
@@ -71,36 +188,45 @@ class Todo extends Component {
     const newTodos = todos.slice();
     newTodos.splice(itemIdx, 1);
 
-    this.setState({
-      todos: newTodos,
-    })
+    this.editTodos(newTodos);
   }
 
   handleDateChange = (date, todoId)=>{
-    const{todos, nextId} = this.state;
+    const{todos} = this.state;
     const todoIdx = findTodoByID(todos, todoId);
    
 
     // making copy instead of modifying the object to allow functionality like 
     // undo changes in future
+    // not changing the id because the old item is immediately replaced by the new
+    // one so there are no need to worry about duplicate ids
     const newTodoItem = Object.assign({}, todos[todoIdx]);
-    newTodoItem.id = nextId;
-    this.setState({nextId: nextId+1});
     newTodoItem.date = date;
 
     const newTodos = todos.slice();
     newTodos[todoIdx] = newTodoItem;
-    this.setState({todos: newTodos});
+    this.editTodos(newTodos);
   }
 
 	render() {
 		return (
 			<div className="todoContainer">
-				<h1>ToDo List</h1>
-				
-				<InputTodo
+        <Typography>
+          <Title>ToDo List</Title>
+          
+          <Paragraph> 
+            Press <Text keyboard>Enter</Text> to input a list item
+          </Paragraph>
+
+          <Paragraph> 
+            Use <Text keyboard>Ctrl+Z</Text> to undo, 
+            <Text keyboard>Ctrl+Shift+Z</Text> to redo
+          </Paragraph>
+        </Typography>
+        
+        <InputTodo
           addTodo={this.addInput}
-				/>
+        />
 
         <List 
           dataSource={this.state.todos}
@@ -113,6 +239,7 @@ class Todo extends Component {
             />
           )}
         />
+        
 			</div>
 		);
 	}

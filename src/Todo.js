@@ -4,7 +4,7 @@ import { Input, List, DatePicker} from "antd";
 import {CloseCircleOutlined} from '@ant-design/icons';
 
 import { Typography } from 'antd';
-const { Title, Paragraph, Text, Link } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 // PLAN
 // add an event listener- cmd-z / cmd-shift-z to undo/redo changes
@@ -223,7 +223,7 @@ class Todo extends Component {
             <Text keyboard>Ctrl+Shift+Z</Text> to redo
           </Paragraph>
         </Typography>
-        
+
         <InputTodo
           addTodo={this.addInput}
         />
